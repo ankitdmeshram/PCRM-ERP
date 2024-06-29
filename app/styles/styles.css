@@ -1,0 +1,25 @@
+* {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.h-100vh {
+  min-height: 100vh;
+}
+.bg-back {
+  background: linear-gradient(
+    90deg,
+    rgba(237, 221, 34, 0.6223739495798319) 0%,
+    rgba(255, 0, 0, 0.1601890756302521) 52%,
+    rgba(255, 255, 255, 0.8100490196078431) 100%
+  );
+}
+.gp-5 {
+  padding: 3rem;
+}
+@media (max-width: 576px) {
+  .gp-5 {
+    padding: 2rem;
+  }
+}
