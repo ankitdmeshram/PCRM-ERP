@@ -31,7 +31,10 @@ const Modal = ({ show = false, type = "", message = "" }) => {
                                 modalData?.type === "error" ?
                                     <i class="fa-regular fa-circle-xmark text-danger fw-bold modalIcon"></i>
                                     :
-                                    <i class="fa-regular fa-circle-check text-success fw-bold modalIcon"></i>
+                                    modalData?.type == "info" ?
+                                        <i class="fa-solid fa-circle-info fw-bold modalIcon"></i>
+                                        :
+                                        <i class="fa-regular fa-circle-check text-success fw-bold modalIcon"></i>
                             }
                             <h5 className="mt-3">{modalData?.message}</h5>
                         </div>
@@ -39,7 +42,10 @@ const Modal = ({ show = false, type = "", message = "" }) => {
                             {
                                 modalData?.type === "error" ?
                                     <button type="button" className="btn btn-danger px-4" data-bs-dismiss="modal">Ok</button>
-                                    : <button type="button" className="btn btn-primary px-4" data-bs-dismiss="modal">Ok</button>
+                                    :
+                                    modalData?.type == "info" ?
+                                        <button type="button" className="btn btn-dark px-4" data-bs-dismiss="modal">Ok</button>
+                                        : <button type="button" className="btn btn-primary px-4" data-bs-dismiss="modal">Ok</button>
                             }
                         </div>
                     </div>

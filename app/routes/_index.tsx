@@ -2,6 +2,7 @@ import { Link } from "@remix-run/react";
 import { useState } from "react";
 import "~/styles/styles.css";
 import Modal from "~/components/modal";
+import { validateEmail } from "~/utils/common";
 
 const _index = () => {
   const [userData, setUserData] = useState({
@@ -25,6 +26,48 @@ const _index = () => {
   const signInHandler = async (e: any) => {
     try {
       e.preventDefault();
+      if (!userData.email || !userData.password) {
+        setShowModal(prev => {
+          return {
+            ...prev,
+            display: true,
+            message: "All fields are required",
+            type: "info",
+          }
+        });
+        setTimeout(() => {
+          setShowModal(prev => {
+            return {
+              ...prev,
+              display: false,
+              message: "",
+              type: "",
+            }
+          });
+        }, 100);
+        return;
+      }
+      if (!validateEmail(userData.email)) {
+        setShowModal(prev => {
+          return {
+            ...prev,
+            display: true,
+            message: "Invalid email",
+            type: "info",
+          }
+        });
+        setTimeout(() => {
+          setShowModal(prev => {
+            return {
+              ...prev,
+              display: false,
+              message: "",
+              type: "",
+            }
+          });
+        }, 100);
+        return;
+      }
       const response = await fetch("http://localhost:4000/api/auth/signin", {
         method: "POST",
         headers: {
@@ -43,7 +86,6 @@ const _index = () => {
             type: data.type,
           }
         });
-
         setTimeout(() => {
           setShowModal(prev => {
             return {
@@ -93,14 +135,13 @@ const _index = () => {
                   Email address
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   className="form-control"
                   id="email"
                   aria-describedby="emailHelp"
                   name="email"
                   value={userData.email}
                   onChange={(e) => handleChange(e)}
-                  required
                 />
                 {/* <div id="emailHelp" className="form-text">
                 We'll never share your email with anyone else.
@@ -117,7 +158,6 @@ const _index = () => {
                   name="password"
                   value={userData.password}
                   onChange={(e) => handleChange(e)}
-                  required
                 />
               </div>
               <div className="mb-3 form-check">
@@ -125,7 +165,6 @@ const _index = () => {
                   type="checkbox"
                   className="form-check-input"
                   id="required"
-                  required
                 />
                 <label className="form-check-label" htmlFor="required">
                   Remember Me
