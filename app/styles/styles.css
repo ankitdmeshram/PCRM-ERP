@@ -18,6 +18,9 @@
 .gp-5 {
   padding: 3rem;
 }
+.modalIcon {
+  font-size: 4em;
+}
 @media (max-width: 576px) {
   .gp-5 {
     padding: 2rem;
