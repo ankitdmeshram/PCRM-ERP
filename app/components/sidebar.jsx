@@ -5,6 +5,7 @@ const sidebar = ({ sidebarOpen }) => {
             <div className="sidebar-links">
                 <div className="sidebar-link"><i className="fa-solid fa-house"></i> Home</div>
                 <div className="sidebar-link"><i className="fa-solid fa-briefcase"></i> Projects</div>
+                <div className="sidebar-link"><i class="fa-solid fa-file-invoice-dollar"></i> Billings</div>
                 <div className="sidebar-link"><i className="fa-solid fa-users"></i> Customers</div>
                 <div className="sidebar-link"><i className="fa-solid fa-gear"></i> Settings</div>
             </div>
