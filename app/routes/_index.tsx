@@ -1,8 +1,8 @@
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import "~/styles/styles.css";
 import Modal from "~/components/modal";
-import { validateEmail } from "~/utils/common";
+import { setCookie, validateEmail } from "~/utils/common";
 
 const _index = () => {
   const [userData, setUserData] = useState({
@@ -22,6 +22,8 @@ const _index = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const navigate = useNavigate()
 
   const signInHandler = async (e: any) => {
     try {
@@ -78,6 +80,11 @@ const _index = () => {
       const data: any = await response.json();
       console.log(data)
       if (data) {
+        if (data.success) {
+          setCookie("ud", data.token, 1)
+          navigate("/dashboard")
+          return
+        }
         setShowModal(prev => {
           return {
             ...prev,
@@ -104,7 +111,7 @@ const _index = () => {
           ...prev,
           display: true,
           message: error.message,
-          type: error.type,
+          type: "error",
         }
       });
       setTimeout(() => {

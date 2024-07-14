@@ -9,9 +9,7 @@ const Modal = ({ show = false, type = "", message = "" }) => {
     })
     useEffect(() => {
         if (show) {
-            // document.querySelector("#ModalOpenBtn").click()
             const myModal = new bootstrap.Modal(document.querySelector('#messageModal'), {
-                // keyboard: false,
             })
             myModal.show()
             setModalData({
@@ -29,12 +27,12 @@ const Modal = ({ show = false, type = "", message = "" }) => {
                         <div className="modal-body text-center pb-1">
                             {
                                 modalData?.type === "error" ?
-                                    <i class="fa-regular fa-circle-xmark text-danger fw-bold modalIcon"></i>
+                                    <i className="fa-regular fa-circle-xmark text-danger fw-bold modalIcon"></i>
                                     :
                                     modalData?.type == "info" ?
-                                        <i class="fa-solid fa-circle-info fw-bold modalIcon"></i>
+                                        <i className="fa-solid fa-circle-info fw-bold modalIcon"></i>
                                         :
-                                        <i class="fa-regular fa-circle-check text-success fw-bold modalIcon"></i>
+                                        <i className="fa-regular fa-circle-check text-success fw-bold modalIcon"></i>
                             }
                             <h5 className="mt-3">{modalData?.message}</h5>
                         </div>
