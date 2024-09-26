@@ -216,7 +216,7 @@ const register = () => {
                 Sign Up
               </button>
               <p className="text-center mt-4">
-                Don't have an account? <Link to={"../"}>Register Now</Link>
+                Already have an account? <Link to={"../"}>Login Now</Link>
               </p>
             </form>
           </div>
