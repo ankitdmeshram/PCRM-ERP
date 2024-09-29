@@ -81,7 +81,8 @@ const _index = () => {
       console.log(data)
       if (data) {
         if (data.success) {
-          setCookie("ud", data.token, 1)
+          setCookie("ud", data.token, 30)
+          setCookie("uid", data.userId, 30)
           navigate("/dashboard")
           return
         }
