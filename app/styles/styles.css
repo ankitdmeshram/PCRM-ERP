@@ -13,6 +13,7 @@
       rgba(255, 0, 0, 0.085) 52%,
       rgba(255, 216, 216, 0.166) 100%);
 }
+
 .btn-black {
   background: black !important;
   color: white !important;
@@ -24,6 +25,10 @@
 
 .gp-5 {
   padding: 3rem;
+}
+
+.font-weight-bold {
+  font-weight: 600;
 }
 
 .modalIcon {
@@ -77,18 +82,22 @@
 .table-title {
   width: 300px;
 }
+
 .table-row .table-col {
   border: 1px solid #ccc;
   padding: 15px 10px 10px;
 }
+
 .thead.table-row .table-col {
   border: 1px solid #ccc;
   padding: 10px;
 }
+
 .table-row .table-date {
   width: 160px;
   text-align: center;
 }
+
 .table-action {
   width: 300px;
   flex-wrap: nowrap;
