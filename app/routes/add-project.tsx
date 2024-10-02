@@ -10,6 +10,8 @@ import Header from "../components/header";
 import Sidebar from "../components/sidebar";
 import Spinner from "../components/spinner";
 import { getCookie } from '~/utils/common';
+import Modal from '~/components/modal';
+import { useNavigate } from '@remix-run/react';
 
 const projects = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -22,10 +24,13 @@ const projects = () => {
         dueDate: '',
         status: '',
     })
+    const [modal, setModal] = useState({ show: false, message: "" })
 
     useEffect(() => {
         setIsLoading(false)
     }, [])
+
+    const navigate = useNavigate()
 
     const handleAddProject = async () => {
         try {
@@ -43,23 +48,30 @@ const projects = () => {
                     "x-auth-token": `${token}`,
                 },
                 body: JSON.stringify(newProject),
-            }).then(res => res.json()
+            }).then(res => {
+                if (res.status === 401) {
+                    const url = new URL(window.location.href)
+                    setModal({ show: true, message: "Something went wrong" })
+                    navigate("/?redirect=" + url.pathname)
+                }
+                return res.json()
+            }
             )
-
             if (data?.success) {
+                setModal({ show: true, message: data.message })
                 console.log(data)
             }
             setIsLoading(false)
         } catch (error) {
             console.log(error)
             alert('An error occurred')
+            setModal({ show: true, message: "Something went wrong! Please try again." })
         }
-
     }
-
 
     return (
         <>
+            <Modal show={modal.show} message={modal.message} />
             <Spinner display={isLoading} />
             <div className="bg-back h-100vh">
                 <Header setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
