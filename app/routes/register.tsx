@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import { useState } from "react";
 import Modal from "~/components/modal";
 import "~/styles/styles.css";
-import { validateEmail } from "~/utils/common";
+import { domainName, validateEmail } from "~/utils/common";
 
 const register = () => {
   const [userData, setUserData] = useState({
@@ -90,7 +90,7 @@ const register = () => {
         }, 100);
         return;
       }
-      fetch("http://localhost:4000/api/auth/signup", {
+      fetch(`${domainName()}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,7 +128,7 @@ const register = () => {
 
   return (
     <>
-      <Modal show={showModal.display} message={showModal.message} type={showModal.type} />
+      <Modal show={showModal.display} message={showModal.message} type={showModal.type} setModal={setShowModal} />
       <div className="container-fluid bg-back">
         <div className="row justify-content-center align-items-center h-100vh">
           <div className="col-xxl-6 col-xl-6 col-lg-8 col-md-9 col-sm-11">

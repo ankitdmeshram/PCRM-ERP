@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from "@remix-run/react";
 
 import "~/styles/styles.css";
@@ -9,7 +9,7 @@ import Header from "../components/header";
 import Sidebar from "../components/sidebar";
 import Spinner from "../components/spinner";
 
-import { getCookie } from '~/utils/common';
+import { domainName, getCookie } from '~/utils/common';
 
 import moment from 'moment';
 import Modal from '~/components/modal';
@@ -22,16 +22,15 @@ const projects = () => {
 
     const navigate = useNavigate()
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         fetchProject()
-        setIsLoading(false)
     }, [])
 
     const fetchProject = async () => {
         try {
             setIsLoading(true)
             const token = await getCookie("ud").then(res => res)
-            const data: any = await fetch("http://localhost:4000/api/project/all-project", {
+            const data: any = await fetch(`${domainName()}/api/project/all-project`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -39,7 +38,7 @@ const projects = () => {
                 },
                 body: JSON.stringify({}),
             })
-                .then((res:any) => {
+                .then((res: any) => {
                     if (res.status === 401) {
                         const url = new URL(window.location.href)
                         setModal({ show: true, message: "Something went wrong" })
@@ -71,9 +70,50 @@ const projects = () => {
         }
     }
 
+    const deleteProject = async (id: any) => {
+        try {
+            const confirm = window.confirm("Are you sure you want to delete this project?")
+            if (!confirm) return
+            setIsLoading(true)
+
+            const token = await getCookie("ud").then(res => res)
+            const data: any = await fetch(`${domainName()}/api/project/delete-project`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-auth-token": `${token}`,
+                },
+                body: JSON.stringify({ _id: id }),
+            })
+                .then((res: any) => {
+                    if (res.status === 401) {
+                        const url = new URL(window.location.href)
+                        // setModal({ show: true, message: "Something went wrong" })
+                        navigate("/?redirect=" + url.pathname)
+                        return
+                    }
+                    setModal({ show: true, message: "Project deleted successfully" })
+
+                    setProjectData((prev: any) => {
+                        return prev.filter((project: any) => project._id !== id)
+                    })
+
+                    setIsLoading(false)
+                    return res.json()
+                })
+                .catch(err => {
+                    setIsLoading(false)
+                    console.log("err")
+                })
+        } catch (error) {
+            setIsLoading(false)
+            console.log(error)
+        }
+    }
+
     return (
         <>
-            <Modal show={modal.show} message={modal.message} />
+            <Modal show={modal.show} message={modal.message} setModal={setModal} />
             <Spinner display={isLoading} />
             <div className="bg-back h-100vh">
                 <Header setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
@@ -110,7 +150,7 @@ const projects = () => {
                                             <div className="col table-col table-date">{project.updatedAt}</div>
                                             <div className="col table-col table-date">{project.createdAt}</div>
                                             <div className="col table-action">
-                                                <button className="col btn btn-black me-1">Update</button><button className="col btn btn-danger">Delete</button>
+                                                <button className="col btn btn-black me-1" onClick={() => navigate(`/update-project/${project?._id}`) }>Update</button><button className="col btn btn-danger" onClick={() => deleteProject(project._id)}>Delete</button>
                                             </div>
                                         </div>
                                     })

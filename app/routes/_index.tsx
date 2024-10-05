@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import "~/styles/styles.css";
 import Modal from "~/components/modal";
-import { setCookie, validateEmail } from "~/utils/common";
+import { domainName, setCookie, validateEmail } from "~/utils/common";
 
 const _index = () => {
   const [userData, setUserData] = useState({
@@ -70,7 +70,7 @@ const _index = () => {
         }, 100);
         return;
       }
-      const response = await fetch("http://localhost:4000/api/auth/signin", {
+      const response = await fetch(`${domainName()}/api/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -130,7 +130,7 @@ const _index = () => {
 
   return (
     <>
-      <Modal show={showModal.display} message={showModal.message} type={showModal.type} />
+      <Modal show={showModal.display} message={showModal.message} type={showModal.type} setModal={setShowModal} />
       <div className="container-fluid bg-back">
         <div className="row justify-content-center align-items-center h-100vh">
           <div className="col-xxl-4 col-xl-5 col-lg-6 col-md-7 col-sm-8">

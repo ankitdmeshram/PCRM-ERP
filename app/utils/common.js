@@ -1,3 +1,8 @@
+export const domainName = () => {
+    console.log(window.location.hostname);
+    return window.location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://yourdomain.com';
+}
+
 export const validateEmail = (email) => {
     // Regular expression pattern for validating email addresses
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

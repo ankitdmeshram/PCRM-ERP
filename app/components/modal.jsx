@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-const Modal = ({ show = false, type = "", message = "" }) => {
+const Modal = ({ show = false, type = "", message = "", setModal }) => {
 
     const [modalData, setModalData] = useState({
         message: "",
@@ -15,6 +15,12 @@ const Modal = ({ show = false, type = "", message = "" }) => {
             setModalData({
                 message: message,
                 type: type
+            })
+            setModal(prev => {
+                return {
+                    ...prev,
+                    show: false
+                }
             })
         }
     }, [show])

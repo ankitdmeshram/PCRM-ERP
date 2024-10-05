@@ -1,4 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from '@remix-run/react';
+import React, { useEffect, useState } from 'react'
+import Modal from '~/components/modal';
+import { domainName, getCookie } from '~/utils/common';
+import moment from 'moment';
 
 import "~/styles/styles.css";
 import "~/styles/dashboard.css";
@@ -9,14 +13,12 @@ import { Editor } from 'primereact/editor';
 import Header from "../components/header";
 import Sidebar from "../components/sidebar";
 import Spinner from "../components/spinner";
-import { domainName, getCookie } from '~/utils/common';
-import Modal from '~/components/modal';
-import { useNavigate } from '@remix-run/react';
 
-const projects = () => {
+const updateProject = () => {
+    const { id } = useParams();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
-    const [newProject, setNewProject] = useState<any>({
+    const [projectData, setProjectData] = useState<any>({
         projectName: '',
         description: '',
         startDate: '',
@@ -28,26 +30,46 @@ const projects = () => {
 
     useEffect(() => {
         setIsLoading(false)
+        viewProject(id)
     }, [])
+
+    const viewProject = async (_id: any) => {
+        try {
+            const token = await getCookie("ud").then(res => res)
+            const response: any = await fetch(`${domainName()}/api/project/view-project`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-auth-token": `${token}`,
+                },
+                body: JSON.stringify({ _id }),
+            }).then(res => res.json())
+
+            setProjectData(response.project)
+
+        } catch (error) {
+
+        }
+    }
 
     const navigate = useNavigate()
 
-    const handleAddProject = async () => {
+    const handleUpdateProject = async () => {
         try {
-            if (newProject?.projectName == "") {
+            if (projectData?.projectName == "") {
                 alert('Please enter project name')
                 return
             }
             setIsLoading(true)
             const token = await getCookie("ud").then(res => res)
 
-            const data: any = await fetch(`${domainName()}/api/project/create-project`, {
+            const data: any = await fetch(`${domainName()}/api/project/update-project`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "x-auth-token": `${token}`,
                 },
-                body: JSON.stringify(newProject),
+                body: JSON.stringify(projectData),
             }).then(res => {
                 if (res.status === 401) {
                     const url = new URL(window.location.href)
@@ -59,11 +81,9 @@ const projects = () => {
             )
             if (data?.success) {
                 setModal({ show: true, message: data.message })
-                console.log(data)
             }
             setIsLoading(false)
         } catch (error) {
-            console.log(error)
             alert('An error occurred')
             setModal({ show: true, message: "Something went wrong! Please try again." })
         }
@@ -81,12 +101,13 @@ const projects = () => {
                         <div className="box shadow-sm">
 
                             <div className="add-project-section">
-                                <h5 className='font-weight-bold'>Add Project</h5>
+                                <h5 className='font-weight-bold'>Update Project</h5>
                                 <div className="row">
                                     <div className="form-group mt-3">
                                         <label htmlFor="projectName">Project Name</label>
                                         <input type="text"
-                                            onChange={(e) => setNewProject({ ...newProject, projectName: e.target.value })}
+                                            onChange={(e) => setProjectData({ ...projectData, projectName: e.target.value })}
+                                            value={projectData.projectName}
                                             className="form-control mt-1" id="projectName" aria-describedby="emailHelp" placeholder="Enter Project Name" />
                                     </div>
                                 </div>
@@ -94,35 +115,41 @@ const projects = () => {
                                     <div className="form-group mt-3">
                                         <label htmlFor="projectName">Description</label>
                                         <Editor className='mt-1'
-                                            onTextChange={(e) => setNewProject({ ...newProject, description: e.htmlValue })}
-                                            style={{ height: '240px' }} />
+                                            onTextChange={(e) => setProjectData({ ...projectData, description: e.htmlValue })}
+                                            style={{ height: '240px' }}
+                                            value={projectData.description}
+                                        />
                                     </div>
                                 </div>
                                 <div className="row">
                                     <div className="form-group mt-3 col-sm-6 col-12">
                                         <label htmlFor="projectName">Start Date</label>
                                         <input type="date"
-                                            onChange={(e) => setNewProject({ ...newProject, startDate: e.target.value })}
-                                            className="form-control mt-1" id="projectName" aria-describedby="emailHelp" placeholder="Enter Project Name" />
+                                            onChange={(e) => setProjectData({ ...projectData, startDate: e.target.value })}
+                                            value={moment(projectData.startDate).format('YYYY-MM-DD')}
+                                            className="form-control mt-1" id="projectName" aria-describedby="emailHelp" />
                                     </div>
                                     <div className="form-group mt-3 col-sm-6 col-12">
                                         <label htmlFor="projectName">End Date</label>
                                         <input type="date"
-                                            onChange={(e) => setNewProject({ ...newProject, endDate: e.target.value })}
-                                            className="form-control mt-1" id="projectName" aria-describedby="emailHelp" placeholder="Enter Project Name" />
+                                            value={moment(projectData.endDate).format('YYYY-MM-DD')}
+                                            onChange={(e) => setProjectData({ ...projectData, endDate: e.target.value })}
+                                            className="form-control mt-1" id="projectName" aria-describedby="emailHelp" />
                                     </div>
                                 </div>
                                 <div className="row">
                                     <div className="form-group mt-3 col-sm-6 col-12">
                                         <label htmlFor="projectName">Due Date</label>
                                         <input type="date"
-                                            onChange={(e) => setNewProject({ ...newProject, dueDate: e.target.value })}
+                                            value={moment(projectData.dueDate).format('YYYY-MM-DD')}
+                                            onChange={(e) => setProjectData({ ...projectData, dueDate: e.target.value })}
                                             className="form-control mt-1" id="projectName" aria-describedby="emailHelp" placeholder="Enter Project Name" />
                                     </div>
                                     <div className="form-group mt-3 col-sm-6 col-12">
                                         <label htmlFor="projectName">Project Status</label>
                                         <select name="" id="" className="form-control mt-1"
-                                            onChange={(e) => setNewProject({ ...newProject, status: e.target.value })}
+                                            onChange={(e) => setProjectData({ ...projectData, status: e.target.value })}
+                                            value={projectData.status}
                                         >
                                             <option value="">Select Project Status</option>
                                             <option value="Not Started">Not Started</option>
@@ -150,7 +177,7 @@ const projects = () => {
                                 </div> */}
                                 <div className="row">
                                     <div className="form-group mt-3">
-                                        <button className='btn btn-black' onClick={() => handleAddProject()}>Add Project</button>
+                                        <button className='btn btn-black' onClick={() => handleUpdateProject()}>Update Project</button>
                                     </div>
                                 </div>
                             </div>
@@ -163,4 +190,4 @@ const projects = () => {
     )
 }
 
-export default projects;
+export default updateProject
